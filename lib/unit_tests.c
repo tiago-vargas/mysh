@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdbool.h>
 
 #define RED         "\e[31m"
