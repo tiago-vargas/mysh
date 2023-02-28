@@ -2,6 +2,8 @@
 #include <stdbool.h>
 #include <string.h>
 #include <unistd.h>
+#include <errno.h>
+#include <sys/wait.h>
 
 #define INPUT_BUFFER_SIZE 1024
 #define ARG_MAX 1023
@@ -67,6 +69,7 @@ int main(const int argc, char **argv)
 			if (feof(stdin))
 				return 0;
 
+			// Begin parsing input //////////////////////
 			char *tokens[ARG_MAX];
 			tokenize(input_buffer, /*out*/ tokens);
 
@@ -79,8 +82,25 @@ int main(const int argc, char **argv)
 
 			char *command_path;
 			command_path = tokens[0];
+			// End parsing input ////////////////////////
 
-			execv(command_path, arguments);
+			int pid = fork();
+			if (pid == -1)
+			{
+				/* An error occurred */
+				printf("Error while forking: errno = %d" "\n", errno);
+			}
+			else if (pid == 0)
+			{
+				/* New process' code */
+				execv(command_path, arguments);
+			}
+			else
+			{
+				/* Old process' code */
+				int status;
+				waitpid(pid, /*out*/ &status, 0);
+			}
 		}
 	}
 
