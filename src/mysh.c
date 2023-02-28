@@ -17,7 +17,7 @@ void parse_arguments(/*out*/ char *arguments[], char **argv, int argc)
 	arguments[last_index] = NULL;
 }
 
-void strip_new_line_at_end(char string[])
+void strip_new_line_at_the_end(char string[])
 {
 	/// Replaces ending newline with '\0', if any
 
@@ -41,9 +41,26 @@ void print_prompt()
 	printf("MyShell $ ");
 }
 
+void get_raw_input(/*out*/ char input_buffer[], int buffer_size)
+{
+	fgets(input_buffer, buffer_size, stdin);
+}
+
+void copy_vector_ending_with_null(/*out*/ char *destination[], char **source)
+{
+	int i;
+	for (i = 0; source[i] != NULL; i++)
+		destination[i] = source[i];
+
+	destination[i] = NULL;
+}
+
 int main(const int argc, char **argv)
 {
-	if (argc > 1)
+	bool command_has_arguments = (argc > 1);
+	bool should_run_interactively = (!command_has_arguments);
+
+	if (!should_run_interactively)
 	{
 		/// Usage: `mysh path-to-command [options]`
 
@@ -62,44 +79,39 @@ int main(const int argc, char **argv)
 			/// Usage: `mysh`
 
 			print_prompt();
-			fgets(input_buffer, INPUT_BUFFER_SIZE, stdin);
+			get_raw_input(input_buffer, INPUT_BUFFER_SIZE);
 
 			if (feof(stdin))
 				return 0;
 
 			// Begin parsing input //////////////////////
-			strip_new_line_at_end(input_buffer);
+			strip_new_line_at_the_end(input_buffer);
 
 			char *tokens[ARG_MAX];
 			tokenize(input_buffer, /*out*/ tokens);
 
-			char *arguments[ARG_MAX + 1];
-			int i;
-			for (i = 0; tokens[i] != NULL; i++)
-				arguments[i] = tokens[i];
+			char *arguments[ARG_MAX + 1];  // +1 to allocate NULL at the end
+			copy_vector_ending_with_null(/*out*/ arguments, tokens);
 
-			arguments[i] = NULL;
-
-			char *command_path;
-			command_path = tokens[0];
+			char *command_path = tokens[0];
 			// End parsing input ////////////////////////
 
 			int pid = fork();
-			if (pid == -1)
+
+			bool is_child_process = (pid == 0);
+			bool is_parent_process = (pid > 0);
+
+			if (is_child_process)
 			{
-				/* An error occurred */
-				printf("Error while forking: errno = %d" "\n", errno);
-			}
-			else if (pid == 0)
-			{
-				/* New process' code */
 				execv(command_path, arguments);
+			}
+			else if (is_parent_process)
+			{
+				waitpid(pid, NULL, 0);
 			}
 			else
 			{
-				/* Old process' code */
-				int status;
-				waitpid(pid, /*out*/ &status, 0);
+				printf("Error while forking: errno = %d" "\n", errno);
 			}
 		}
 	}
