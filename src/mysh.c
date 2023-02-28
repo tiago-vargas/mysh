@@ -19,7 +19,7 @@ void parse_arguments(/*out*/ char *arguments[], char **argv, int argc)
 
 void strip_new_line_at_end(char string[])
 {
-	// Replaces eding newline with '\0'
+	/// Replaces ending newline with '\0', if any
 
 	int i;
 	for (i = 0; string[i] != '\n' && string[i] != '\0'; i++)
@@ -30,8 +30,6 @@ void strip_new_line_at_end(char string[])
 
 void tokenize(char string[], /*out*/ char *tokens[])
 {
-	strip_new_line_at_end(string);
-
 	tokens[0] = strtok(string, " ");
 
 	for (int i = 1; i < INPUT_BUFFER_SIZE; i++)
@@ -70,6 +68,8 @@ int main(const int argc, char **argv)
 				return 0;
 
 			// Begin parsing input //////////////////////
+			strip_new_line_at_end(input_buffer);
+
 			char *tokens[ARG_MAX];
 			tokenize(input_buffer, /*out*/ tokens);
 
