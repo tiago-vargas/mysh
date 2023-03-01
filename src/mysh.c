@@ -65,7 +65,7 @@ int main(const int argc, char **argv)
 
 	if (!should_run_interactively)
 	{
-		/// Usage: `mysh path-to-command [options]`
+		/// Usage: `mysh command [options]`
 
 		char *executable_path = argv[1];
 		char *arguments[argc];
@@ -99,6 +99,11 @@ int main(const int argc, char **argv)
 			char *command = tokens[0];
 			// End parsing input ////////////////////////
 
+			// For when user presses <Enter> with no commands
+			if (command == NULL)
+				continue;
+
+			// Manages shell built-in commands
 			if (strcmp(command, "cd") == 0)
 			{
 				char *directory = arguments[1];
