@@ -69,11 +69,11 @@ int main(const int argc, char **argv)
 	{
 		/// Usage: `mysh command [options]`
 
-		char *executable_path = argv[1];
+		char *command = argv[1];
 		char *arguments[argc];
 		parse_arguments(out arguments, argv, argc);
 
-		execv(executable_path, arguments);
+		execvp(command, arguments);
 	}
 	else
 	{
