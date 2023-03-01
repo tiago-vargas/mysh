@@ -96,6 +96,12 @@ int main(const int argc, char **argv)
 			char *command = tokens[0];
 			// End parsing input ////////////////////////
 
+			if (strcmp(command, "cd") == 0)
+			{
+				chdir(arguments[1]);
+				continue;
+			}
+
 			int pid = fork();
 
 			bool is_child_process = (pid == 0);
