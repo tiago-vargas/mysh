@@ -11,7 +11,9 @@
 #define INPUT_BUFFER_SIZE 1024
 #define ARG_MAX 1023
 
-void parse_arguments(/*out*/ char *arguments[], char **argv, int argc)
+#define out /* simply indicates an out parameter */
+
+void parse_arguments(out char *arguments[], char **argv, int argc)
 {
 	int last_index = argc - 1;
 	for (int i = 0; i < last_index; i++)
@@ -31,7 +33,7 @@ void strip_new_line_at_the_end(char string[])
 	string[i] = '\0';
 }
 
-void tokenize(char string[], /*out*/ char *tokens[])
+void tokenize(char string[], out char *tokens[])
 {
 	tokens[0] = strtok(string, " ");
 
@@ -44,12 +46,12 @@ void print_prompt()
 	printf(BLUE "MyShell $ " RESET);
 }
 
-void get_raw_input(/*out*/ char input_buffer[], int buffer_size)
+void get_raw_input(out char input_buffer[], int buffer_size)
 {
 	fgets(input_buffer, buffer_size, stdin);
 }
 
-void copy_vector_ending_with_null(/*out*/ char *destination[], char **source)
+void copy_vector_ending_with_null(out char *destination[], char **source)
 {
 	int i;
 	for (i = 0; source[i] != NULL; i++)
@@ -69,7 +71,7 @@ int main(const int argc, char **argv)
 
 		char *executable_path = argv[1];
 		char *arguments[argc];
-		parse_arguments(/*out*/ arguments, argv, argc);
+		parse_arguments(out arguments, argv, argc);
 
 		execv(executable_path, arguments);
 	}
@@ -91,10 +93,10 @@ int main(const int argc, char **argv)
 			strip_new_line_at_the_end(input_buffer);
 
 			char *tokens[ARG_MAX];
-			tokenize(input_buffer, /*out*/ tokens);
+			tokenize(input_buffer, out tokens);
 
 			char *arguments[ARG_MAX + 1];  // +1 to allocate NULL at the end
-			copy_vector_ending_with_null(/*out*/ arguments, tokens);
+			copy_vector_ending_with_null(out arguments, tokens);
 
 			char *command = tokens[0];
 			// End parsing input ////////////////////////
