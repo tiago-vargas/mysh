@@ -6,6 +6,8 @@
 #include <errno.h>
 #include <sys/wait.h>
 
+#include "colors.h"
+
 #define INPUT_BUFFER_SIZE 1024
 #define ARG_MAX 1023
 
@@ -39,7 +41,7 @@ void tokenize(char string[], /*out*/ char *tokens[])
 
 void print_prompt()
 {
-	printf("MyShell $ ");
+	printf(BLUE "MyShell $ " RESET);
 }
 
 void get_raw_input(/*out*/ char input_buffer[], int buffer_size)
@@ -74,6 +76,7 @@ int main(const int argc, char **argv)
 	else
 	{
 		/// Usage: `mysh`
+
 		char input_buffer[INPUT_BUFFER_SIZE];
 
 		while (true)
@@ -112,7 +115,7 @@ int main(const int argc, char **argv)
 			{
 				execvp(command, arguments);
 				// If program control got here, then `execv` failed
-				printf("Command not executed: errno = %d" "\n", errno);
+				printf(RED "Command not executed: errno = %d" "\n" RESET, errno);
 				exit(errno);
 			}
 			else if (is_parent_process)
@@ -121,7 +124,7 @@ int main(const int argc, char **argv)
 			}
 			else
 			{
-				printf("Error while forking: errno = %d" "\n", errno);
+				printf(RED "Error while forking: errno = %d" "\n" RESET, errno);
 			}
 		}
 	}
