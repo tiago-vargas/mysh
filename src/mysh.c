@@ -73,12 +73,11 @@ int main(const int argc, char **argv)
 	}
 	else
 	{
+		/// Usage: `mysh`
 		char input_buffer[INPUT_BUFFER_SIZE];
 
 		while (true)
 		{
-			/// Usage: `mysh`
-
 			print_prompt();
 			get_raw_input(input_buffer, INPUT_BUFFER_SIZE);
 
@@ -94,7 +93,7 @@ int main(const int argc, char **argv)
 			char *arguments[ARG_MAX + 1];  // +1 to allocate NULL at the end
 			copy_vector_ending_with_null(/*out*/ arguments, tokens);
 
-			char *command_path = tokens[0];
+			char *command = tokens[0];
 			// End parsing input ////////////////////////
 
 			int pid = fork();
@@ -104,7 +103,7 @@ int main(const int argc, char **argv)
 
 			if (is_child_process)
 			{
-				execv(command_path, arguments);
+				execvp(command, arguments);
 				// If program control got here, then `execv` failed
 				printf("Command not executed: errno = %d" "\n", errno);
 				exit(errno);
