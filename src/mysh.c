@@ -98,7 +98,8 @@ int main(const int argc, char **argv)
 
 			if (strcmp(command, "cd") == 0)
 			{
-				chdir(arguments[1]);
+				char *directory = arguments[1];
+				chdir(directory);
 				continue;
 			}
 
