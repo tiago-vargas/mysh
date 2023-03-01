@@ -104,6 +104,9 @@ int main(const int argc, char **argv)
 			if (is_child_process)
 			{
 				execv(command_path, arguments);
+				// If program control got here, then `execv` failed
+				printf("Command not executed: errno = %d" "\n", errno);
+				return errno;
 			}
 			else if (is_parent_process)
 			{
