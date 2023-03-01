@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
 #include <unistd.h>
@@ -106,7 +107,7 @@ int main(const int argc, char **argv)
 				execv(command_path, arguments);
 				// If program control got here, then `execv` failed
 				printf("Command not executed: errno = %d" "\n", errno);
-				return errno;
+				exit(errno);
 			}
 			else if (is_parent_process)
 			{
