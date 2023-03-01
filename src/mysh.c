@@ -113,6 +113,7 @@ int main(const int argc, char **argv)
 				continue;
 			}
 
+			// Manages other commands
 			int pid = fork();
 
 			bool is_child_process = (pid == 0);
